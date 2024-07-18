@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	"log"
 	"net/http"
 
 	"github.com/ahenla/go-ecom/service/user"
@@ -27,5 +28,6 @@ func (s *APIServer) Run() error {
 	userHandler := user.NewHandler()
 	userHandler.RegisterRoutes(subrouter)
 
+	log.Println("Listening on", s.address)
 	return http.ListenAndServe(s.address, router)
 }
