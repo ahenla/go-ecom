@@ -15,3 +15,6 @@ migrate-up:
 
 migrate-down:
 	@go run cmd/migrate/main.go down
+
+migrate-fix:
+	@go run cmd/migrate/main.go fix force $(filter-out $@,$(MAKECMDGOALS))
