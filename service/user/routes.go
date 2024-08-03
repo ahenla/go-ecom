@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/ahenla/go-ecom/config"
 	"github.com/ahenla/go-ecom/service/auth"
 	"github.com/ahenla/go-ecom/types"
 	"github.com/ahenla/go-ecom/utils"
@@ -46,7 +47,16 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 
 	if !auth.ComparePasswords(u.Password, []byte(payload.Password)) {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("user not found, invalid email or password"))
+		return
 	}
+
+	secret := []byte(config.Envs.JWTSecret)
+	token, err := auth.CreateJWT(secret, u.ID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+	}
+
+	utils.WriteJSON(w, http.StatusOK, map[string]string{"token": token})
 }
 
 func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {

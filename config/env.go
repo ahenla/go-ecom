@@ -15,6 +15,7 @@ type Config struct {
 	DBPassword             string
 	DBAdress               string
 	DBName                 string
+	JWTSecret              string
 	JWTExpirationInSeconds int64
 }
 
@@ -31,6 +32,7 @@ func InitConfig() Config {
 		DBPassword:             getENV("DB_PASSWORD", "C0ntr4s3n4-"),
 		DBAdress:               fmt.Sprintf("%s:%s", getENV("DB_HOST", "127.0.0.1"), getENV("DB_PORT", "3306")),
 		DBName:                 getENV("DB_NAME", "ecomerce_go"),
+		JWTSecret:              getENV("JWT_SECRET", "not-so-secret"),
 		JWTExpirationInSeconds: getENVAsInt("JWT_EXP", 3600*24*7),
 	}
 }
