@@ -54,6 +54,15 @@ type OrderItem struct {
 	CreatedAt time.Time `json:"createdAt"`
 }
 
+type CartItem struct {
+	ProductID int `json:"productId"`
+	Quantity  int `json:"quantity"`
+}
+
+type CartCheckoutPayload struct {
+	Items []CartItem `json:"items" validate:"required"`
+}
+
 type RegisterUserPayload struct {
 	FirstName string `json:"firstName" validate:"required"`
 	LastName  string `json:"lastName" validate:"required"`
