@@ -10,6 +10,7 @@ type UserStore interface {
 
 type ProductStore interface {
 	GetProducts() ([]Product, error)
+	GetProductByID(ps []int) ([]Product, error)
 }
 
 type OrderStore interface {
