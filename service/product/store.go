@@ -2,6 +2,8 @@ package product
 
 import (
 	"database/sql"
+	"fmt"
+	"strings"
 
 	"github.com/ahenla/go-ecom/types"
 )
@@ -12,6 +14,16 @@ type Store struct {
 
 func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
+}
+
+func (s *Store) CreateProduct(product types.Product) error {
+	query := "INSERT INTO products(name, description, image, price, quantity) VALUES(?, ?, ?, ?, ?)"
+	_, err := s.db.Exec(query, product.Name, product.Description, product.Image, product.Price, product.Quantity)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *Store) GetProducts() ([]types.Product, error) {
@@ -50,4 +62,31 @@ func scanRowsIntoProduct(rows *sql.Rows) (*types.Product, error) {
 	}
 
 	return product, nil
+}
+
+func (s *Store) GetProductsByIDs(productIDs []int) ([]types.Product, error) {
+	placeholders := strings.Repeat(",?", len(productIDs)-1)
+	query := fmt.Sprintf("SELECT * FROM products WHERE id IN (?%s)", placeholders)
+
+	//convert productIDs to []interface{}
+	args := make([]interface{}, len(productIDs))
+	for i, v := range productIDs {
+		args[i] = v
+	}
+
+	rows, err := s.db.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	products := []types.Product{}
+	for rows.Next() {
+		p, err := scanRowsIntoProduct(rows)
+		if err != nil {
+			return nil, err
+		}
+		products = append(products, *p)
+	}
+
+	return products, nil
 }
