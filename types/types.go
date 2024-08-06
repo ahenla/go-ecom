@@ -10,7 +10,7 @@ type UserStore interface {
 
 type ProductStore interface {
 	GetProducts() ([]Product, error)
-	GetProductByID(ps []int) ([]Product, error)
+	GetProductsByIDs(ps []int) ([]Product, error)
 	CreateProduct(Product) error
 }
 
@@ -82,5 +82,5 @@ type CreateProductPayload struct {
 	Description string  `json:"description" validdate:"required"`
 	Image       string  `json:"image" validdate:"required"`
 	Price       float64 `json:"price" validate:"required"`
-	Quantity    int     `json:"quantity" validate:"required,limit=100"`
+	Quantity    int     `json:"quantity" validate:"required,max=100"`
 }

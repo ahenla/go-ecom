@@ -36,6 +36,6 @@ func (h *Handler) handleCheckout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ps, err := h.productStore.GetProducts(ProductsIDs)
+	// ps, err := h.productStore.GetProducts()
 
 }
