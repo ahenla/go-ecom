@@ -1,6 +1,7 @@
 package product
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/ahenla/go-ecom/types"
@@ -31,4 +32,9 @@ func (h *Handler) HandleGetProducts(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) HandleCreateProduct(w http.ResponseWriter, r *http.Request) {
+	var payload types.CreateProductPayload
+	if err := utils.ParseJSON(r, &payload); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("Invalid payload: %v", err))
+	}
+
 }

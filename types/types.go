@@ -75,3 +75,11 @@ type LoginUserPayload struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
 }
+
+type CreateProductPayload struct {
+	Name        string  `json:"name" validdate:"required"`
+	Description string  `json:"description" validdate:"required"`
+	Image       string  `json:"image" validdate:"required"`
+	Price       float64 `json:"price" validate:"required"`
+	Quantity    int     `json:"quantity" validate:"required,limit=100"`
+}
