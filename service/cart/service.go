@@ -26,9 +26,16 @@ func (h *Handler) createOrder(ps []types.Product, items []types.CartItem, userID
 	}
 	// check if all the products are in stock
 	if err := checkIfCartIsInStock(items, productMap); err != nil {
+		return 0, 0, err
 	}
 	// calculate the total price
+	totalPrice := calculateTotalPrice(items, productMap)
+
 	// reduce the quantity of the products in the database
+	for _, item := range items {
+		product := productMap[item.ProductID]
+		product.Quantity -= item.Quantity
+	}
 	// create the order
 	// create order items
 
@@ -52,4 +59,14 @@ func checkIfCartIsInStock(cartItems []types.CartItem, products map[int]types.Pro
 	}
 
 	return nil
+}
+
+func calculateTotalPrice(cartItems []types.CartItem, products map[int]types.Product) float64 {
+	var total float64
+
+	for _, item := range cartItems {
+		product := products[item.ProductID]
+		total += product.Price * float64(item.Quantity)
+	}
+	return total
 }
