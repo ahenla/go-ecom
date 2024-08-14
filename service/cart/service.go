@@ -36,6 +36,8 @@ func (h *Handler) createOrder(ps []types.Product, items []types.CartItem, userID
 		product := productMap[item.ProductID]
 		product.Quantity -= item.Quantity
 	}
+
+	h.productStore.UpdateProduct(product)
 	// create the order
 	// create order items
 
