@@ -35,13 +35,32 @@ func (h *Handler) createOrder(ps []types.Product, items []types.CartItem, userID
 	for _, item := range items {
 		product := productMap[item.ProductID]
 		product.Quantity -= item.Quantity
+
+		h.productStore.UpdateProduct(product)
 	}
 
-	h.productStore.UpdateProduct(product)
 	// create the order
-	// create order items
+	orderID, err := h.store.CreateOrder(types.Order{
+		UserID:  userID,
+		Total:   totalPrice,
+		Status:  "pending",
+		Address: "valid for an address",
+	})
+	if err != nil {
+		return 0, 0, err
+	}
 
-	return 0, 0, nil
+	// create order items
+	for _, item := range items {
+		h.store.CreateOrderItem(types.OrderItem{
+			OrderID:   orderID,
+			ProductID: item.ProductID,
+			Quantity:  item.Quantity,
+			Price:     productMap[item.ProductID].Price,
+		})
+	}
+
+	return orderID, totalPrice, nil
 }
 
 func checkIfCartIsInStock(cartItems []types.CartItem, products map[int]types.Product) error {

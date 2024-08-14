@@ -24,6 +24,7 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 }
 
 func (h *Handler) handleCheckout(w http.ResponseWriter, r *http.Request) {
+	userID := 0
 	var cart types.CartCheckoutPayload
 	if err := utils.ParseJSON(r, &cart); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
@@ -44,4 +45,14 @@ func (h *Handler) handleCheckout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ps, err := h.productStore.GetProductsByIDs(productIDs)
+
+	orderID, totalPrice, err := h.createOrder(ps, cart.Items, userID)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+	}
+
+	utils.WriteJSON(w, http.StatusOK, map[string]any{
+		"total_price": totalPrice,
+		"order_id":    orderID,
+	})
 }
