@@ -34,3 +34,13 @@ func WithJWTAuth(handlerFunc http.HandlerFunc, store types.UserStore) http.Handl
 		//set context "userID" to the user ID
 	}
 }
+
+func getTokenFromRequest(r *http.Request) string {
+	tokenAuth := r.Header.Get("Authorization")
+
+	if tokenAuth != "" {
+		return tokenAuth
+	}
+
+	return ""
+}

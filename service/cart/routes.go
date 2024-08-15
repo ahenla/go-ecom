@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/ahenla/go-ecom/service/auth"
 	"github.com/ahenla/go-ecom/types"
 	"github.com/ahenla/go-ecom/utils"
 	"github.com/go-playground/validator/v10"
@@ -13,6 +14,7 @@ import (
 type Handler struct {
 	store        types.OrderStore
 	productStore types.ProductStore
+	userStore    types.UserStore
 }
 
 func NewHandler(store types.OrderStore, productStore types.ProductStore) *Handler {
@@ -20,7 +22,7 @@ func NewHandler(store types.OrderStore, productStore types.ProductStore) *Handle
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/cart/checkout", auth.WithAuth(h.handleCheckout)).Methods(http.MethodPost)
+	router.HandleFunc("/cart/checkout", auth.WithJWTAuth(h.handleCheckout, h.userStore)).Methods(http.MethodPost)
 }
 
 func (h *Handler) handleCheckout(w http.ResponseWriter, r *http.Request) {
